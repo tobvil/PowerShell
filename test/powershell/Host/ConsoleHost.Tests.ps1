@@ -119,6 +119,7 @@ Describe "ConsoleHost unit tests" -tags "Feature" {
             { & $powershell -input blah -comm { $input } } | Should -Throw -ErrorId "IncorrectValueForFormatParameter"
         }
     }
+
     Context "CommandLine" {
         It "simple -args" {
             & $powershell -noprofile { $args[0] } -args "hello world" | Should -Be "hello world"
@@ -297,6 +298,19 @@ Describe "ConsoleHost unit tests" -tags "Feature" {
         It "text output" {
             # Join (multiple lines) and remove whitespace (we don't care about spacing) to verify we converted to string (by generating a table)
             -join (& $powershell -noprofile -outputFormat text { [PSCustomObject]@{X=10;Y=20} }) -replace "\s","" | Should -Be "XY--1020"
+        }
+
+        It "errors are in text if error is redirected, encoded command, non-interactive, and outputformat specified" {
+            $p = [Diagnostics.Process]::new()
+            $p.StartInfo.FileName = "pwsh"
+            $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes("throw 'boom'"))
+            $p.StartInfo.Arguments = "-EncodedCommand $encoded -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -OutputFormat text"
+            $p.StartInfo.UseShellExecute = $false
+            $p.StartInfo.RedirectStandardError = $true
+            $p.Start() | Out-Null
+            $out = $p.StandardError.ReadToEnd()
+            $out | Should -Not -BeNullOrEmpty
+            $out.Split([Environment]::NewLine)[0] | Should -BeExactly "boom"
         }
     }
 
@@ -566,6 +580,56 @@ foo
             $output = & $powershell -WorkingDirectory 2>&1
             $LASTEXITCODE | Should -Be $ExitCodeBadCommandLineParameter
             $output | Should -Not -BeNullOrEmpty
+        }
+
+        It "-WorkingDirectory should be processed before profiles" {
+
+            if (Test-Path $PROFILE) {
+                $currentProfile = Get-Content $PROFILE
+            }
+            else {
+                New-Item -ItemType File -Path $PROFILE -Force
+            }
+
+            @"
+                (Get-Location).Path
+                Set-Location $testdrive
+"@ > $PROFILE
+
+            try {
+                $out = pwsh -workingdirectory ~ -c '(Get-Location).Path'
+                $out | Should -HaveCount 2
+                $out[0] | Should -BeExactly (Get-Item ~).FullName
+                $out[1] | Should -BeExactly "$testdrive"
+            }
+            finally {
+                if ($currentProfile) {
+                    Set-Content $PROFILE -Value $currentProfile
+                }
+                else {
+                    Remove-Item $PROFILE
+                }
+            }
+        }
+    }
+
+    Context "CustomPipeName startup tests" {
+
+        It "Should create pipe file if CustomPipeName is specified" {
+            $pipeName = [System.IO.Path]::GetRandomFileName()
+            $pipePath = Get-PipePath $pipeName
+
+            # The pipePath should be created by the time the -Command is executed.
+            & $powershell -CustomPipeName $pipeName -Command "Test-Path '$pipePath'" | Should -BeTrue
+        }
+
+        It "Should throw if CustomPipeName is too long on Linux or macOS" -Skip:($IsWindows) {
+            # Generate a string that is larger than the max pipe name length.
+            $longPipeName = [string]::new("A", 200)
+
+            "`$pid" | & $powershell -CustomPipeName $longPipeName -c -
+            # 64 is the ExitCode for BadCommandLineParameter
+            $LASTEXITCODE | Should -Be 64
         }
     }
 }

@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
 using System.Management.Automation;
 using System.Management.Automation.Host;
+using System.Text;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands
@@ -26,6 +27,7 @@ namespace Microsoft.PowerShell.Commands
         public SwitchParameter Stream
         {
             get { return _stream; }
+
             set { _stream = value; }
         }
 
@@ -39,10 +41,11 @@ namespace Microsoft.PowerShell.Commands
         public int Width
         {
             get { return (_width != null) ? _width.Value : 0; }
+
             set { _width = value; }
         }
 
-        private Nullable<int> _width = null;
+        private int? _width = null;
 
         /// <summary>
         /// False to add a newline to the end of the output string, true if not.
@@ -51,6 +54,7 @@ namespace Microsoft.PowerShell.Commands
         public SwitchParameter NoNewline
         {
             get { return _noNewLine; }
+
             set { _noNewLine = value; }
         }
 
@@ -146,7 +150,7 @@ namespace Microsoft.PowerShell.Commands
         {
             base.EndProcessing();
 
-            //close the writer
+            // close the writer
             _writer.Flush();
             _writer.Dispose();
 
@@ -160,7 +164,7 @@ namespace Microsoft.PowerShell.Commands
         private StreamingTextWriter _writer = null;
 
         /// <summary>
-        ///  Buffer used when buffering until the end.
+        /// Buffer used when buffering until the end.
         /// </summary>
         private StringBuilder _buffer = new StringBuilder();
     }

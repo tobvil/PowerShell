@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.IO.Compression;
 using System.Management.Automation;
 using System.Management.Automation.Internal;
 using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -33,7 +33,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="initialCapacity"></param>
-        /// <param name="cmdlet">Owner cmdlet if any</param>
+        /// <param name="cmdlet">Owner cmdlet if any.</param>
         internal WebResponseContentMemoryStream(Stream stream, int initialCapacity, Cmdlet cmdlet)
             : base(initialCapacity)
         {
@@ -211,6 +211,7 @@ namespace Microsoft.PowerShell.Commands
         private void Initialize()
         {
             if (_isInitialized) { return; }
+
             _isInitialized = true;
             try
             {
@@ -396,6 +397,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 encoding = null;
             }
+
             return DecodeStream(stream, ref encoding);
         }
 
@@ -411,6 +413,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 encoding = null;
             }
+
             return result;
         }
 
@@ -452,7 +455,7 @@ namespace Microsoft.PowerShell.Commands
             return content;
         }
 
-        internal static Byte[] EncodeToBytes(String str, Encoding encoding)
+        internal static byte[] EncodeToBytes(String str, Encoding encoding)
         {
             if (encoding == null)
             {
@@ -463,7 +466,7 @@ namespace Microsoft.PowerShell.Commands
             return encoding.GetBytes(str);
         }
 
-        internal static Byte[] EncodeToBytes(String str)
+        internal static byte[] EncodeToBytes(String str)
         {
             return EncodeToBytes(str, null);
         }

@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Threading;
 using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using System.Management.Automation.Remoting.Internal;
+using System.Management.Automation.Runspaces;
+using System.Threading;
 
 namespace Microsoft.PowerShell.Commands
 {
@@ -329,7 +329,9 @@ namespace Microsoft.PowerShell.Commands
         {
             // Create new collection objects.
             if (_debugBlockingCollection != null) { _debugBlockingCollection.Dispose(); }
+
             if (_debugAccumulateCollection != null) { _debugAccumulateCollection.Dispose(); }
+
             _debugBlockingCollection = new PSDataCollection<PSStreamObject>();
             _debugBlockingCollection.BlockingEnumerator = true;
             _debugAccumulateCollection = new PSDataCollection<PSStreamObject>();
@@ -341,6 +343,7 @@ namespace Microsoft.PowerShell.Commands
                 {
                     _runningPowerShell.OutputBuffer.DataAdding += HandlePowerShellOutputBufferDataAdding;
                 }
+
                 if (_runningPowerShell.ErrorBuffer != null)
                 {
                     _runningPowerShell.ErrorBuffer.DataAdding += HandlePowerShellErrorBufferDataAdding;
@@ -355,6 +358,7 @@ namespace Microsoft.PowerShell.Commands
                     {
                         _runningPipeline.Output.DataReady += HandlePipelineOutputDataReady;
                     }
+
                     if (_runningPipeline.Error != null)
                     {
                         _runningPipeline.Error.DataReady += HandlePipelineErrorDataReady;

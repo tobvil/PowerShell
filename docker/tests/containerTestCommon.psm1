@@ -68,7 +68,7 @@ function Invoke-Docker
 # Return a list of Linux Container Test Cases
 function Get-LinuxContainer
 {
-    foreach($os in 'centos7','ubuntu14.04','ubuntu16.04')
+    foreach($os in 'centos7','ubuntu16.04')
     {
         Write-Output @{
             Name = $os
@@ -220,16 +220,18 @@ function Get-DefaultPreviewConfigForPackageValidation
 {
     # format: <DockerfileFolderName>=<PartOfPackageFilename>
     @{  'centos7'='rhel.7';
-        'debian.8'='debian.8';
         'debian.9'='debian.9';
-        'fedora26'='rhel.7';
-        'fedora27'='rhel.7';
         'fedora28'='rhel.7';
-        'opensuse42.2'='linux-x64.tar.gz';
         'opensuse42.3'='linux-x64.tar.gz';
-        'ubuntu14.04'='ubuntu.14.04';
         'ubuntu16.04'='ubuntu.16.04';
-        'ubuntu18.04'='ubuntu.18.04'
+        'ubuntu18.04'='ubuntu.18.04';
+        'fxdependent-centos7'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-debian.9'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-fedora28'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-opensuse42.3'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-ubuntu16.04'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-ubuntu18.04'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-dotnetsdk-latest'='linux-x64-fxd-dotnetsdk.tar.gz'
     }
 }
 
@@ -240,14 +242,13 @@ function Get-DefaultStableConfigForPackageValidation
 {
     # format: <DockerfileFolderName>=<PartOfPackageFilename>
     @{  'centos7'='rhel.7';
-        'debian.8'='debian.8';
         'debian.9'='debian.9';
-        'fedora26'='rhel.7';
-        'fedora27'='rhel.7';
-        'opensuse42.2'='linux-x64.tar.gz';
         'opensuse42.3'='linux-x64.tar.gz';
-        'ubuntu14.04'='ubuntu.14.04';
-        'ubuntu16.04'='ubuntu.16.04'
+        'ubuntu16.04'='ubuntu.16.04';
+        'fxdependent-centos7'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-debian.9'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-opensuse42.3'='linux-x64-fxdependent.tar.gz';
+        'fxdependent-ubuntu16.04'='linux-x64-fxdependent.tar.gz'
     }
 }
 
@@ -257,7 +258,7 @@ function Get-PackageNamesOnAzureBlob
     param(
         [string]
         $ContainerUrl,
-        
+
         # $SAS (shared access signature) param should include beginning '?' and trailing '&'
         [string]
         $SAS
@@ -315,7 +316,7 @@ function Test-PSPackage
     {
         $buildDir = Join-Path $RootFolder $kp.Key
         $packageName = $packageList | Where-Object {$_ -like $('*'+$kp.Value+'*')}
-        
+
         if (-not (Test-Path $buildDir))
         {
             Write-Error "Directory does Not exist - $buildDir; Check `$Config parameter and '$RootFolder' folder"
@@ -356,7 +357,7 @@ function Test-PSPackage
         $buildArgs += $dockerDirPath
 
         $dockerResult = Invoke-Docker -Command 'build' -Params $buildArgs -FailureAction warning
-        
+
         $confName = Split-Path -Leaf $dockerDirPath
         $results.Add($confName, $dockerResult)
         if (-not $dockerResult) {$returnValue = $false}

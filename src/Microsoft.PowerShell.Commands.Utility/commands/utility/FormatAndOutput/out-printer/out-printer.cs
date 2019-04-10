@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands
@@ -29,6 +30,7 @@ namespace Microsoft.PowerShell.Commands
         public string Name
         {
             get { return _printerName; }
+
             set { _printerName = value; }
         }
 

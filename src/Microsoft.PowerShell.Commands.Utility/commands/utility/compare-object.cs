@@ -2,9 +2,10 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using System.Management.Automation;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands
@@ -47,8 +48,10 @@ namespace Microsoft.PowerShell.Commands
         public SwitchParameter IgnoreWhiteSpace
         {
             get { return _ignoreWhiteSpace; }
+
             set { _ignoreWhiteSpace = value; }
         }
+
         private bool _ignoreWhiteSpace = false;
         */
 
@@ -58,8 +61,10 @@ namespace Microsoft.PowerShell.Commands
         public SwitchParameter ExcludeDifferent
         {
             get { return _excludeDifferent; }
+
             set { _excludeDifferent = value; }
         }
+
         private bool _excludeDifferent /*=false*/;
 
         /// <summary>
@@ -68,12 +73,14 @@ namespace Microsoft.PowerShell.Commands
         public SwitchParameter IncludeEqual
         {
             get { return _includeEqual; }
+
             set
             {
                 _isIncludeEqualSpecified = true;
                 _includeEqual = value;
             }
         }
+
         private bool _includeEqual /* = false */;
         private bool _isIncludeEqualSpecified /* = false */;
 
@@ -83,8 +90,10 @@ namespace Microsoft.PowerShell.Commands
         public SwitchParameter PassThru
         {
             get { return _passThru; }
+
             set { _passThru = value; }
         }
+
         private bool _passThru /* = false */;
         #endregion Parameters
 
@@ -136,7 +145,7 @@ namespace Microsoft.PowerShell.Commands
         ///     While there is no space in referenceEntryBacklog
         ///       Emit oldest entry in referenceEntryBacklog as unmatched
         ///       Remove oldest entry from referenceEntryBacklog
-        ///     Add referenceEntry to referenceEntryBacklog
+        ///     Add referenceEntry to referenceEntryBacklog.
         /// </summary>
         /// <param name="differenceEntry"></param>
         private void Process(OrderByPropertyEntry differenceEntry)
@@ -203,6 +212,7 @@ namespace Microsoft.PowerShell.Commands
                         EmitDifferenceOnly(_differenceEntryBacklog[0]);
                         _differenceEntryBacklog.RemoveAt(0);
                     }
+
                     _differenceEntryBacklog.Add(differenceEntry);
                 }
                 else
@@ -228,6 +238,7 @@ namespace Microsoft.PowerShell.Commands
                         EmitReferenceOnly(_referenceEntryBacklog[0]);
                         _referenceEntryBacklog.RemoveAt(0);
                     }
+
                     _referenceEntryBacklog.Add(referenceEntry);
                 }
                 else
@@ -276,6 +287,7 @@ namespace Microsoft.PowerShell.Commands
                     return listEntry;
                 }
             }
+
             return null;
         }
 
@@ -347,6 +359,7 @@ namespace Microsoft.PowerShell.Commands
                     }
                 }
             }
+
             mshobj.Properties.Remove(SideIndicatorPropertyName);
             PSNoteProperty sideNote = new PSNoteProperty(
                 SideIndicatorPropertyName, sideIndicator);
@@ -370,6 +383,7 @@ namespace Microsoft.PowerShell.Commands
                 {
                     return;
                 }
+
                 if (_isIncludeEqualSpecified && !_includeEqual)
                 {
                     return;
@@ -429,11 +443,13 @@ namespace Microsoft.PowerShell.Commands
             {
                 EmitDifferenceOnly(differenceEntry);
             }
+
             _differenceEntryBacklog.Clear();
             foreach (OrderByPropertyEntry referenceEntry in _referenceEntryBacklog)
             {
                 EmitReferenceOnly(referenceEntry);
             }
+
             _referenceEntryBacklog.Clear();
         }
         #endregion Overrides

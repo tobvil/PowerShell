@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Globalization;
 using System.Management.Automation;
 using System.Runtime.InteropServices;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.PowerShell.Commands
@@ -152,7 +152,7 @@ namespace Microsoft.PowerShell.Commands
                 {
                     // unknown/unsupported platform
                     Diagnostics.Assert(false, "Unable to determine Operating System Platform");
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }

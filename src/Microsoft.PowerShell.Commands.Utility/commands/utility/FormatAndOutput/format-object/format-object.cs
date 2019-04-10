@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Management.Automation;
+
 using Microsoft.PowerShell.Commands.Internal.Format;
 
 namespace Microsoft.PowerShell.Commands
@@ -32,6 +33,7 @@ namespace Microsoft.PowerShell.Commands
         public object[] Property
         {
             get { return _props; }
+
             set { _props = value; }
         }
 
@@ -45,6 +47,7 @@ namespace Microsoft.PowerShell.Commands
         public int Depth
         {
             get { return _depth; }
+
             set { _depth = value; }
         }
 
@@ -70,6 +73,7 @@ namespace Microsoft.PowerShell.Commands
                 {
                     ReportCannotSpecifyViewAndProperty();
                 }
+
                 parameters.viewName = this.View;
             }
 

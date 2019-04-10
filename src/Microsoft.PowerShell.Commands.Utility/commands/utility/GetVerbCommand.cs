@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Management.Automation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Management.Automation;
 using System.Reflection;
 
 namespace Microsoft.PowerShell.Commands
@@ -60,6 +60,7 @@ namespace Microsoft.PowerShell.Commands
                         continue;
                     }
                 }
+
                 foreach (FieldInfo field in type.GetFields())
                 {
                     if (field.IsLiteral)
